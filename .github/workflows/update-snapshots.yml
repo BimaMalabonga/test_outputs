@@ -7,9 +7,6 @@ on:
         description: 'Run workflow on the following branch'
         required: true
 
-permissions:
-  contents: write
-
 jobs:
   update_outputs:
 
