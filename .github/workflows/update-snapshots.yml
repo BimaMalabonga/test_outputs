@@ -21,7 +21,7 @@ jobs:
       - name: Verify branch exists
         run: |
           if ! git ls-remote --exit-code origin ${{ github.event.inputs.target-branch }}; then
-            echo "❌ ERROR: Branch '${{ github.event.inputs.target-branch }}' does not exist on origin."
+            echo "❌ ERROR: Branch '${{ github.event.inputs.target-branch }}' does not exist on origin. DEV BRANCH"
             exit 1
           fi
 
