@@ -7,6 +7,9 @@ on:
         description: 'Run workflow on the following branch'
         required: true
 
+permissions:
+  contents: write
+
 jobs:
   update_outputs:
 
@@ -17,7 +20,6 @@ jobs:
         python-version: ["3.11"]
 
     steps:
-
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
