@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       target-branch:
-        description: 'Commit new outputs to the following branch'
+        description: 'Commit outputs to the following branch'
         required: true
 
 jobs:
