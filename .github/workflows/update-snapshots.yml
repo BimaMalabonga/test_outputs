@@ -21,11 +21,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.event.inputs.target-branch }}
+          ref: master
           token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 0
 
-      - name: Check if branch exists
+      - name: Check if target branch exists
         run: |
           BRANCH="${{ github.event.inputs.target-branch }}"
           echo "🔍 Checking if branch '$BRANCH' exists on origin..."
@@ -36,6 +36,11 @@ jobs:
             echo "❌ ERROR: Branch '$BRANCH' does not exist on origin."
             exit 1
           fi
+
+      - name: Checkout target branch
+        run: |
+          git fetch origin "${{ github.event.inputs.target-branch }}"
+          git checkout "${{ github.event.inputs.target-branch }}"
 
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v3
