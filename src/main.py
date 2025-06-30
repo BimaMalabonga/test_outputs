@@ -14,7 +14,7 @@ def main(settings_dict=None):
             settings_dict = json.load(f)
 
     df = pd.DataFrame(index=[0], columns=["total"])
-    df["total"] = settings_dict["a"] + settings_dict["b"]
+    df["total"] = settings_dict["a"] * settings_dict["b"]
 
     output_set = OutputSet()
     output_set.add_item(data=df, filename="df", extension="csv")
