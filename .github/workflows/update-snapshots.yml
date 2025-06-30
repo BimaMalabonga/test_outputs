@@ -1,4 +1,4 @@
-name: Update Snapshots
+name: Update Snapshot Tests
 
 on:
   workflow_dispatch:
@@ -25,7 +25,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 0
 
-      - name: Verify branch exists
+      - name: Check if branch exists
         run: |
           BRANCH="${{ github.event.inputs.target-branch }}"
           echo "🔍 Checking if branch '$BRANCH' exists on origin..."
@@ -64,5 +64,5 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -u
-          git diff --cached --quiet || git commit -m "Update snapshot outputs"
+          git diff --cached --quiet || git commit -m "Update snapshot expected outputs"
           git push origin ${{ github.event.inputs.target-branch }}
