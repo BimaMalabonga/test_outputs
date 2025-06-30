@@ -120,12 +120,8 @@ def create_new_case_folder() -> Path:
     case_numbers = [int(c.name[4:]) for c in cases]
 
     # Determine new case number
-    new_case_number = None
-    for i in range(1, max(case_numbers)):
-        if i not in case_numbers:
-            new_case_number = i
-    if new_case_number is None:
-        new_case_number = max(case_numbers) + 1
+    max_case_number = max(case_numbers) if len(case_numbers) > 0 else 0
+    new_case_number = min([c for c in range(1, max_case_number + 2) if c not in case_numbers])
 
     # Create new case folder
     new_case = f"Case{new_case_number:02d}"

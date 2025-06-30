@@ -1,0 +1,69 @@
+name: Update Snapshots
+
+on:
+  workflow_dispatch:
+    inputs:
+      target-branch:
+        description: 'Run workflow on the following branch'
+        required: true
+
+jobs:
+  update:
+
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11"]
+
+    steps:
+
+      - name: Verify branch exists
+        run: |
+          if ! git ls-remote --exit-code origin ${{ github.event.inputs.target-branch }}; then
+            echo "❌ ERROR: Branch '${{ github.event.inputs.target-branch }}' does not exist on origin."
+            exit 1
+          fi
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.target-branch }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v3
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install Microsoft ODBC Driver 18 for SQL Server
+        run: |
+          curl https://packages.microsoft.com/keys/microsoft.asc | sudo apt-key add -
+          sudo add-apt-repository "$(curl https://packages.microsoft.com/config/ubuntu/22.04/prod.list)"
+          sudo apt-get update
+          sudo ACCEPT_EULA=Y apt-get install -y msodbcsql18
+
+      - name: Install Poetry
+        uses: snok/install-poetry@v1
+        with:
+          virtualenvs-create: true
+          virtualenvs-in-project: true
+          virtualenvs-path: .venv
+          installer-parallel: true
+
+      - name: Install dependencies
+        run: |
+          poetry install --no-root
+          source .venv/bin/activate
+
+      - name: Run snapshot tests to update outputs
+        run: |
+          inv run-snapshot-test -t update
+
+      - name: Commit updated snapshots
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -u
+          git diff --cached --quiet || git commit -m "Update snapshot outputs"
+          git push origin ${{ github.event.inputs.target-branch }}
