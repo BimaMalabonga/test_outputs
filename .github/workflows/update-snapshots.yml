@@ -4,11 +4,11 @@ on:
   workflow_dispatch:
     inputs:
       target-branch:
-        description: 'Commit outputs to the following branch'
+        description: 'Run workflow on the following branch'
         required: true
 
 jobs:
-  update_snapshots_outputs:
+  update_outputs:
 
     runs-on: ubuntu-latest
     strategy:
