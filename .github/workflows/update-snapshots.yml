@@ -8,7 +8,7 @@ on:
         required: true
 
 jobs:
-  update:
+  update_snapshots_outputs:
 
     runs-on: ubuntu-latest
     strategy:
