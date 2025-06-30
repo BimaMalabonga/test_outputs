@@ -57,7 +57,9 @@ jobs:
 
       - name: Run snapshot tests to update outputs
         run: |
+          echo "🧪 Running snapshot tests..."
           poetry run inv run-snapshot-test -t update
+          echo "✅ Snapshot tests completed."
 
       - name: Commit updated snapshots
         run: |
