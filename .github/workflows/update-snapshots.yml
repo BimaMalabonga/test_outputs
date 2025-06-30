@@ -55,16 +55,25 @@ jobs:
           poetry install --no-root
           source .venv/bin/activate
 
-      - name: Run snapshot tests to update outputs
+      - name: Run snapshot tests to update expected outputs
         run: |
           echo "🧪 Running snapshot tests..."
           poetry run inv run-snapshot-test -t update
           echo "✅ Snapshot tests completed."
 
-      - name: Commit updated snapshots
+      - name: Commit updated snapshot outputs
         run: |
+          echo "📦 Checking for changes in expected outputs of snapshot tests..."
+          
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -u
-          git diff --cached --quiet || git commit -m "Update snapshot expected outputs"
-          git push origin ${{ github.event.inputs.target-branch }}
+          
+          if git diff --cached --quiet; then
+            echo "✅ No changes detected. Nothing to commit."
+          else
+            echo "📝 Changes detected — committing updated snapshot outputs..."
+            git commit -m "Update snapshot outputs"
+            git push origin ${{ github.event.inputs.target-branch }}
+            echo "🚀 Changes committed and pushed to '${{ github.event.inputs.target-branch }}'."
+          fi
